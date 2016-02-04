@@ -112,10 +112,11 @@ class FlaskView(object):
 
                         if ep:
                             endpoint = ep
-                        elif len(value._rule_cache[name]) == 1:
-                            endpoint = route_name
                         else:
-                            endpoint = "%s_%d" % (route_name, idx,)
+                        # elif len(value._rule_cache[name]) == 1:
+                            endpoint = route_name
+                        # else:
+                        #     endpoint = "%s_%d" % (route_name, idx,)
 
                         app.add_url_rule(rule, endpoint, proxy, subdomain=subdomain, **options)
 
@@ -263,7 +264,9 @@ class FlaskView(object):
                 route_base = cls.__name__[:-4].lower()
             else:
                 route_base = cls.__name__.lower()
-
+        if hasattr(cls, 'subdomain'):
+            sub_rule = parse_rule(cls.subdomain)
+            cls.base_args = [r[2] for r in sub_rule] + getattr(cls,'base_args',[])
         return route_base.strip("/")
 
 
