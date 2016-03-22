@@ -199,8 +199,7 @@ class FlaskView(object):
                     return response
 
             response = view(**request.view_args)
-            if not isinstance(response, Response):
-                response = make_response(response)
+            response = make_response(response)
 
             after_view_name = "after_" + name
             if hasattr(i, after_view_name):
