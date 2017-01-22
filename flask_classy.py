@@ -104,7 +104,7 @@ class FlaskView(object):
                 if hasattr(value, "_rule_cache") and name in value._rule_cache:
                     for idx, cached_rule in enumerate(value._rule_cache[name]):
                         rule, options = cached_rule
-                        rule = cls.build_rule(rule)
+                        rule = cls.build_rule(rule, route_base=options.pop('route_base', None))
                         sub, ep, options = cls.parse_options(options)
 
                         if not subdomain and sub:
@@ -214,7 +214,7 @@ class FlaskView(object):
         return proxy
 
     @classmethod
-    def build_rule(cls, rule, method=None):
+    def build_rule(cls, rule, method=None, route_base=None):
         """Creates a routing rule based on either the class name (minus the
         'View' suffix) or the defined `route_base` attribute of the class
 
@@ -231,7 +231,7 @@ class FlaskView(object):
         if cls.route_prefix:
             rule_parts.append(cls.route_prefix)
 
-        route_base = cls.get_route_base()
+        route_base = route_base or cls.get_route_base()
         if route_base:
             rule_parts.append(route_base)
 
